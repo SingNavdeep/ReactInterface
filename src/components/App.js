@@ -13,29 +13,33 @@ class App extends Component {
   }
 
   componentDidMount() {
+    let index = 0;
     fetch('./data.json')
       .then(response => response.json())
       .then(result => {
-        const apts = result.map(item => (item));
+        const apts = result.map(item => {
+          item.aptId = index++;
+          return item;
+        });
         this.setState({
           myAppointments: apts
         });
       });
   }
   render() {
-    const listPets = this.state.myAppointments.map(apt => {
-      return <div>{apt.petName}</div>
-    });
+    
     return (
       <main className="page bg-white" id="petratings">
           <div className="container">
             <div className="row">
               <div className="col-md-12 bg-white">
                 <div className="container">
-                  {listPets}
                   <AddAppointments />
                   <SearchAppointments />
-                  <ListAppointments />
+                  {
+                    //pass state variable data to ListAppointments component
+                  }
+                  <ListAppointments appointments={this.state.myAppointments}/>
                 </div>
               </div>
             </div>
