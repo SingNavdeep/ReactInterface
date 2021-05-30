@@ -3,6 +3,8 @@ import '../css/App.css';
 import AddAppointments from './AddAppointments';
 import SearchAppointments from './SearchAppointments';
 import ListAppointments from './ListAppointments';
+import {without} from 'lodash';
+
 class App extends Component {
   constructor() {
     super();
@@ -10,6 +12,16 @@ class App extends Component {
       myName: 'Navdeep',
       myAppointments: []
     };
+
+    this.removeAppointment = this.removeAppointment.bind(this);
+  }
+
+  removeAppointment(apt) {
+    let tempApts = this.state.myAppointments;
+    tempApts = without(tempApts, apt);
+    this.setState({
+      myAppointments: tempApts
+    });
   }
 
   componentDidMount() {
@@ -38,8 +50,12 @@ class App extends Component {
                   <SearchAppointments />
                   {
                     //pass state variable data to ListAppointments component
+                    //deleteAppointment refers to a function, when deleteAppointment is passed as props to
+                    //ListAppointments component, the component can call removeAppointment function which 
+                    //actually removes an appointment.
                   }
-                  <ListAppointments appointments={this.state.myAppointments}/>
+                  <ListAppointments appointments={this.state.myAppointments}
+                    deleteAppointment={this.removeAppointment}/>
                 </div>
               </div>
             </div>
