@@ -10,10 +10,21 @@ class App extends Component {
     super();
     this.state = {
       myName: 'Navdeep',
-      myAppointments: []
+      myAppointments: [],
+      formDisplay: true
     };
 
     this.removeAppointment = this.removeAppointment.bind(this);
+    this.switchFormDisplay = this.switchFormDisplay.bind(this);
+  }
+
+  /*
+    toggle display of AddAppointments form component.
+  */
+  switchFormDisplay() {
+    this.setState({
+      formDisplay: !this.state.formDisplay
+    })
   }
 
   removeAppointment(apt) {
@@ -46,7 +57,7 @@ class App extends Component {
             <div className="row">
               <div className="col-md-12 bg-white">
                 <div className="container">
-                  <AddAppointments />
+                  <AddAppointments formDisplay = {this.state.formDisplay} toggleForm={this.switchFormDisplay}/>
                   <SearchAppointments />
                   {
                     //pass state variable data to ListAppointments component
