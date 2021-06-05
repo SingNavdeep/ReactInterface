@@ -16,6 +16,7 @@ class App extends Component {
 
     this.removeAppointment = this.removeAppointment.bind(this);
     this.switchFormDisplay = this.switchFormDisplay.bind(this);
+    this.saveAppointment = this.saveAppointment.bind(this);
   }
 
   /*
@@ -30,6 +31,16 @@ class App extends Component {
   removeAppointment(apt) {
     let tempApts = this.state.myAppointments;
     tempApts = without(tempApts, apt);
+    this.setState({
+      myAppointments: tempApts
+    });
+  }
+
+  saveAppointment(apt) {
+    let tempApts = this.state.myAppointments;
+    apt.aptId = tempApts.length;
+    tempApts.unshift(apt);
+
     this.setState({
       myAppointments: tempApts
     });
@@ -57,7 +68,9 @@ class App extends Component {
             <div className="row">
               <div className="col-md-12 bg-white">
                 <div className="container">
-                  <AddAppointments formDisplay = {this.state.formDisplay} toggleForm={this.switchFormDisplay}/>
+                  <AddAppointments 
+                  formDisplay = {this.state.formDisplay} toggleForm={this.switchFormDisplay}
+                  addAppointment = {this.saveAppointment}/>
                   <SearchAppointments />
                   {
                     //pass state variable data to ListAppointments component
