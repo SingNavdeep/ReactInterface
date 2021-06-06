@@ -3,7 +3,7 @@ import '../css/App.css';
 import AddAppointments from './AddAppointments';
 import SearchAppointments from './SearchAppointments';
 import ListAppointments from './ListAppointments';
-import {without} from 'lodash';
+import {without, findIndex} from 'lodash';
 
 class App extends Component {
   constructor() {
@@ -22,6 +22,7 @@ class App extends Component {
     this.saveAppointment = this.saveAppointment.bind(this);
     this.changeOrder = this.changeOrder.bind(this);
     this.searchApts = this.searchApts.bind(this);
+    this.editRecord = this.editRecord.bind(this);
   }
 
   /*
@@ -61,6 +62,16 @@ class App extends Component {
   searchApts(query) {
     this.setState({
       queryText: query
+    });
+  }
+
+  editRecord(fieldName, value, id) {
+    let tempApts = this.state.myAppointments;
+    let aptIndex = findIndex(this.state.myAppointments, {aptId: id});
+    tempApts[aptIndex][fieldName] = value;
+
+    this.setState({
+      myAppointments: tempApts
     });
   }
 
@@ -115,7 +126,8 @@ class App extends Component {
                     //actually removes an appointment.
                   }
                   <ListAppointments appointments={filteredApts}
-                    deleteAppointment={this.removeAppointment}/>
+                    deleteAppointment={this.removeAppointment}
+                    updateInfo={this.editRecord}/>
                 </div>
               </div>
             </div>
