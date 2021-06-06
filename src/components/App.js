@@ -13,13 +13,15 @@ class App extends Component {
       myAppointments: [],
       formDisplay: false,
       orderBy: 'petName',
-      orderDir: 1
+      orderDir: 1,
+      queryText: ''
     };
 
     this.removeAppointment = this.removeAppointment.bind(this);
     this.switchFormDisplay = this.switchFormDisplay.bind(this);
     this.saveAppointment = this.saveAppointment.bind(this);
     this.changeOrder = this.changeOrder.bind(this);
+    this.searchApts = this.searchApts.bind(this);
   }
 
   /*
@@ -56,6 +58,12 @@ class App extends Component {
     });
   }
 
+  searchApts(query) {
+    this.setState({
+      queryText: query
+    });
+  }
+
   componentDidMount() {
     let index = 0;
     fetch('./data.json')
@@ -73,12 +81,18 @@ class App extends Component {
   render() {
     let filteredApts = this.state.myAppointments;
 
-    filteredApts.sort((a,b) => {
+    filteredApts = filteredApts.sort((a,b) => {
       if(a[this.state.orderBy].toLowerCase() < b[this.state.orderBy].toLowerCase()) {
         return -1 * this.state.orderDir;
       } else {
         return 1 * this.state.orderDir;
       }
+    }).filter(anApt => {
+      return(
+        anApt['petName'].toLowerCase().includes(this.state.queryText.toLowerCase()) || 
+        anApt['ownerName'].toLowerCase().includes(this.state.queryText.toLowerCase()) || 
+        anApt['aptNotes'].toLowerCase().includes(this.state.queryText.toLowerCase())
+      )
     });
     return (
       <main className="page bg-white" id="petratings">
@@ -92,7 +106,8 @@ class App extends Component {
                   <SearchAppointments 
                     orderBy={this.state.orderBy} 
                     orderDir={this.state.orderDir} 
-                    handleOrderChange={this.changeOrder}/>
+                    handleOrderChange={this.changeOrder}
+                    setSearchQuery={this.searchApts}/>
                   {
                     //pass state variable data to ListAppointments component
                     //deleteAppointment refers to a function, when deleteAppointment is passed as props to
