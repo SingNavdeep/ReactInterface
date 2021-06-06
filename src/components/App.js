@@ -11,12 +11,15 @@ class App extends Component {
     this.state = {
       myName: 'Navdeep',
       myAppointments: [],
-      formDisplay: true
+      formDisplay: false,
+      orderBy: 'petName',
+      orderDir: 1
     };
 
     this.removeAppointment = this.removeAppointment.bind(this);
     this.switchFormDisplay = this.switchFormDisplay.bind(this);
     this.saveAppointment = this.saveAppointment.bind(this);
+    this.changeOrder = this.changeOrder.bind(this);
   }
 
   /*
@@ -46,6 +49,13 @@ class App extends Component {
     });
   }
 
+  changeOrder(orderField, orderDirec) {
+    this.setState({
+      orderBy: orderField,
+      orderDir: orderDirec
+    });
+  }
+
   componentDidMount() {
     let index = 0;
     fetch('./data.json')
@@ -61,7 +71,15 @@ class App extends Component {
       });
   }
   render() {
-    
+    let filteredApts = this.state.myAppointments;
+
+    filteredApts.sort((a,b) => {
+      if(a[this.state.orderBy].toLowerCase() < b[this.state.orderBy].toLowerCase()) {
+        return -1 * this.state.orderDir;
+      } else {
+        return 1 * this.state.orderDir;
+      }
+    });
     return (
       <main className="page bg-white" id="petratings">
           <div className="container">
@@ -71,14 +89,17 @@ class App extends Component {
                   <AddAppointments 
                   formDisplay = {this.state.formDisplay} toggleForm={this.switchFormDisplay}
                   addAppointment = {this.saveAppointment}/>
-                  <SearchAppointments />
+                  <SearchAppointments 
+                    orderBy={this.state.orderBy} 
+                    orderDir={this.state.orderDir} 
+                    handleOrderChange={this.changeOrder}/>
                   {
                     //pass state variable data to ListAppointments component
                     //deleteAppointment refers to a function, when deleteAppointment is passed as props to
                     //ListAppointments component, the component can call removeAppointment function which 
                     //actually removes an appointment.
                   }
-                  <ListAppointments appointments={this.state.myAppointments}
+                  <ListAppointments appointments={filteredApts}
                     deleteAppointment={this.removeAppointment}/>
                 </div>
               </div>
